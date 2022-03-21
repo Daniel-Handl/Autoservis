@@ -35,7 +35,7 @@ class Company{
         }
         public String najdiSPZ(String SPZ){
             for (Autoservis a:pobocky.values()) {
-                    if (a.Vlastni(SPZ)) return a.Jmeno;
+                    if (a.Evidence.containsKey(SPZ)) return a.Jmeno;
             }
             return "Auto s SPZ:" + SPZ + "se nenachází na žádné pobočce";
         }
@@ -52,25 +52,22 @@ class Autoservis{
         Evidence = new HashMap<>();
         EET = new ArrayList<>();
     }
-    public boolean Vlastni(String SPZ){
-        return Evidence.containsKey(SPZ);
-    }
     public void Oprav(Auto a,String zakaznik, Date datum){
         Balance += 5000;
-        String[] eet = {UnikatniKod(datum),zakaznik,Jmeno,datum.toString(),  Integer.toString(a.Cena), Integer.toString(a.Cena*0,15)};
+        String[] eet = {UnikatniKod(datum),zakaznik,Jmeno,datum.toString(),  Integer.toString(a.Cena), Double.toString(a.Cena*0.15)};
         EET.add(eet);
     }
     public void Prodej(Auto a,String nakupujici, Date datum){
         Balance += a.Cena;
-        Evidence.remove(a);
-        String[] eet = {UnikatniKod(datum),nakupujici,Jmeno,datum.toString(), Integer.toString(a.Cena), Integer.toString(a.Cena*0,15)};
+        Evidence.remove(a.SPZ);
+        String[] eet = {UnikatniKod(datum),nakupujici,Jmeno,datum.toString(), Integer.toString(a.Cena), Double.toString(a.Cena*0.15)};
         EET.add(eet);
     }
     public void Nakup(Auto a,String prodavajici, Date datum){
 
         Balance -= a.Cena;
         Evidence.put(a.SPZ,a);
-        String[] eet = {UnikatniKod(datum),Jmeno,prodavajici,datum.toString(), Integer.toString(a.Cena), Integer.toString(a.Cena*0,15)};
+        String[] eet = {UnikatniKod(datum),Jmeno,prodavajici,datum.toString(), Integer.toString(a.Cena), Double.toString(a.Cena*0.15)};
         EET.add(eet);
 
     }
