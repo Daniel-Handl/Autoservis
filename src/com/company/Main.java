@@ -7,8 +7,9 @@ public class Main {
 
     public static void main(String[] args) {
         Company skoda = new Company();
-        skoda.postav(new Autoservis(1000,"Praha", "veselá kola"));
-        skoda.postav(new Autoservis(1000,"Praha","u karla"));
+        skoda.postav(new Autoservis(10000000,"Praha", "veselá kola"));
+        skoda.postav(new Autoservis(10000000,"Praha","u karla"));
+        System.out.println(skoda.pobocky.get("veselá kola").Balance);
         int i = 1;
         for (Autoservis a:skoda.pobocky.values()) {
             a.Nakup(10);
@@ -17,8 +18,9 @@ public class Main {
         }
         System.out.println(skoda.najdiSPZ("ZZZ321"));
         System.out.println(skoda.najdiSPZ("ZZZ322"));
-        skoda.zrus("veselá kola");
+        skoda.Prodej("ZZZ321","honza",new Date(System.currentTimeMillis()));
         System.out.println(skoda.najdiSPZ("ZZZ321"));
+        System.out.println(skoda.pobocky.get("u karla").Balance);
     }
 }
 
@@ -26,7 +28,10 @@ class Company{
         public Company(){
             pobocky = new HashMap<>();
         }
-
+        public void Prodej(String SPZ,String nakupujici, Date datum){
+            Autoservis at = pobocky.get(najdiSPZ(SPZ));
+            at.Prodej(at.Evidence.get(SPZ),nakupujici,datum);
+        }
         public void postav(Autoservis a){
             pobocky.put(a.Jmeno,a);
         }
@@ -37,11 +42,10 @@ class Company{
             for (Autoservis a:pobocky.values()) {
                     if (a.Evidence.containsKey(SPZ)) return a.Jmeno;
             }
-            return "Auto s SPZ:" + SPZ + "se nenachází na žádné pobočce";
+            return "Auto s SPZ:" + SPZ + " se nenachází na žádné pobočce";
         }
         HashMap<String,Autoservis> pobocky;
 }
-
 class Autoservis{
 
     public Autoservis(int balance, String lokace, String jmeno){
